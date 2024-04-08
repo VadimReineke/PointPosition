@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>API карт 2ГИС</title>
+    <script src="https://maps.api.2gis.ru/2.0/loader.js?pkg=full"></script>
+    <script src="./index.js"></script>
+</head>
+
+<body>
+
+    <div class="main container" id="main">
+        <div class="textArea__descr">
+            <p>Для передачи необходимо подготовить строки в формате указанном ниже. Не допустимы: знаки
+                препинания после фигурных скобок, пробелы и отступы перед фигурными скобками.
+                Лишняя пустая строка после последнего элемента.
+            </p>
+            <p>Образец строки для передачи:</p>
+            <p>{"item":[55.713810000000002,49.101300000000002],"id":"75375787","lost":true, "radiusMeters": 200}<br>
+                {"item":[55.702530000000003,52.653309999999998],"id":"74138060","lost":false, "radiusMeters": 1000}</p>
+        </div>
+
+        <div class="main__fields-wrapper">
+            <div class="textArea__container">
+                <textarea class="main__textarea" id="textarea"></textarea>
+                <div class="button-wrapper">
+                    <button onclick="getMap2GisApi(), textAreaArray()">Отобразить карту</button>
+                    <button onclick="getAdresArr()">Получить адреса</button>
+                </div>
+            </div>
+
+            <div class="main__listInput-wrapper">
+                <ul class="main__listInput">
+                    <li id="latitude-item">
+                        <label for="latitude">Введите широту:</label>
+                        <input type="number" placeholder="latitude/широта" name="latitude" id="latitude" required>
+                    </li>
+                    <li id="longitude-item">
+                        <label for="longitude">Введите долготу:</label>
+                        <input type="number" placeholder="longitude/долгота" name="longitude" id="longitude" required>
+                    </li>
+                    <li id="point-item">
+                        <label for="pointName">Введите данные для идентификации</label>
+                        <input type="text" placeholder="id" name="pointName" id="id">
+                    </li>
+
+                    <li id="radius-meters">
+                        <label for="radiusMeters">Введите радиус в котором определятся адреса</label>
+                        <input type="text" placeholder="radius-meters" name="pointName" id="radiusMeters">
+                    </li>
+
+                    <li>
+                        <label for="needSearch">Если точка известна: false, иначе true</label>
+                        <select name="needSearch" id="selectNeedSearch">
+                            <option value=false>false</option>
+                            <option value="true">true</option>
+                        </select>
+                    </li>
+                    <div class="handleForm__button-wrapper">
+                        <button onclick="inputCoordinate(), getMap2GisApi()">Отобразить карту</button>
+                        <button onclick="clearInput()">Очистить поля</button>
+                        <button onclick="getAdresInputData()">Узнать адреса рядом</button>
+                    </div>
+                </ul>
+            </div>
+        </div>
+
+        <div id="adres" class="adres-list__wrapper container"></div>
+    </div>
+
+
+    <div id="map" class=""></div>
+</body>
+
+</html>

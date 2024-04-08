@@ -1,0 +1,107 @@
+html {
+    box-sizing: border-box;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+  
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  
+  img {
+    max-width: 100%;
+  }
+
+
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  ul[class],
+  ol[class],
+  li,
+  figure,
+  figcaption,
+  blockquote,
+  dl,
+  dd {
+    margin: 0;
+  }
+  
+  ul[class],
+  ol[class] {
+    list-style: none;
+    padding-inline-start: 0;
+  }
+
+
+.container {
+    margin: 0 auto;
+    padding: 0 15px;
+    max-width: 1440px;
+}
+
+.main__fields-wrapper {
+    display: flex;
+    justify-content: space-around;
+    gap: 25px;
+    margin-bottom: 20px;
+}
+
+.main__textarea {
+    min-width: 600px;
+    min-height: 150px;
+    resize: none;
+}
+
+.main__map {
+    width: 100%;
+    height: 600px;
+}
+
+.main__listInput-wrapper {
+    padding: 15px;
+    border: 1px solid black;
+}
+
+.main__listInput {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;   
+}
+
+.textArea__container {
+    padding: 15px 15px;
+    border: 1px solid black;
+}
+
+.textArea__descr {
+    border: 1px solid black;
+    margin-bottom: 20px;
+}
+
+
+
+.handleForm__button-wrapper {
+    gap: 15px;
+    display: flex;
+}
+
+
+.adres-list__wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.adres-list {
+  width: 25%;
+  border: 1px solid red;
+}
