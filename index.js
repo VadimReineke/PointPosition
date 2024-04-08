@@ -4,9 +4,20 @@ let inputArr = [];
 let inputCoordinateObj = {};
 let queryPoint = {};
 
-// зарегистрируйся на dadata.ru и подставь значения API из личного кабинета
-let apiKey = '';
+// зарегистрируйся на dadata.ru и подставь значения API key из личного кабинета
 let secretKey = '';
+
+const getApiKey = () => {
+  let apiKey = document.getElementById('apiKey').value
+  if (apiKey === '') {
+    alert("Введите код")
+    apiKey = localStorage.getItem('apiKey');
+  } else {
+    localStorage.setItem('apiKey',apiKey)
+  }
+    
+//    console.log(localStorage.getItem('apiKey'))
+}
 
 const getMap2GisApi = async () => {
     removeMap();
@@ -77,6 +88,7 @@ const getMap2GisApi = async () => {
 const dadataApi = async (queryPoint) => {
 
     let adresContainer = document.getElementById('adres');
+    apiKey = localStorage.getItem('apiKey');
 
     // let queryPoint = adresArr[i]
   
@@ -98,7 +110,7 @@ const dadataApi = async (queryPoint) => {
     let adressList = document.createElement('ul');
         adressList.classList.add('adres-list')
     let adressListDescr = document.createElement('p');
-        adressListDescr.innerHTML ='Серийный номер ПУ:' + "" + queryPoint.description;
+        adressListDescr.innerHTML ='Описание точки:' + "" + queryPoint.description;
         adressList.append(adressListDescr);
         adresContainer.append(adressList);
 
@@ -122,7 +134,7 @@ const loadArr = () => {
 }
 
 const addMap = () => {
-    let main = document.getElementById('main');
+    let main = document.getElementById('main__fields-wrapper');
     let mapContainer = document.createElement('div');
     mapContainer.classList.add('main__map');
     mapContainer.setAttribute('id', 'map');
@@ -196,27 +208,42 @@ const clearAdres = () => {
 }
 
 const getAdresArr = async () => {
-    removeMap();
+    // removeMap();
     clearAdres();
     loadArr();
     let adresArr = [];
 
-    if (workArr.length !== 0) {
-        for (i = 0; i < workArr.length; i++) {
-            let point = JSON.parse(workArr[i]);
+    // if (workArr.length !== 0) {
+    //     for (i = 0; i < workArr.length; i++) {
+    //         let point = JSON.parse(workArr[i]);
+    //         let pointAdres = {
+    //             lat: point.item[0],
+    //             lon: point.item[1],
+    //             idPoint: point.description,
+    //             radiusMeters: point.radiusMeters
+    //         }
+    //         adresArr.push(pointAdres);
+    //     }
+    // }
+
+    if (loadArrData.length !== 0) {
+        for (i = 0; i < loadArrData.length; i++) {
+            let point = JSON.parse(loadArrData[i]);
             let pointAdres = {
                 lat: point.item[0],
                 lon: point.item[1],
-                idPoint: point.description,
+                description: point.description,
                 radiusMeters: point.radiusMeters
             }
             adresArr.push(pointAdres);
         }
     }
    
+   
     for (i=0; i < adresArr.length; i++) {
 
         let queryPoint = adresArr[i]
+        console.log(queryPoint);
 
         dadataApi(queryPoint)    
     }
