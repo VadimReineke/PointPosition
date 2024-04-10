@@ -4,90 +4,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/normalize.css">
     <link rel="stylesheet" href="./css/style.css">
-    <title>API карт 2ГИС</title>
+    <title>SearchPoin</title>
     <script src="https://maps.api.2gis.ru/2.0/loader.js?pkg=full"></script>
     <script src="./index.js"></script>
 </head>
 
 <body>
-
-    <header class="container header-container">
-        <h2 class="header__descr"> Зарегистрируйся на dadata.ru и подставь значения API key из личного кабинета</h2>
-        <label for="apiKey">Введите apiKey</label>
-        <input type="text" name="apiKey" id="apiKey" placeholder="api-key">
-        <button onclick="getApiKey()">ok</button>
-    </header>
-
-    <div class="main container" id="main">
-        <div class="textArea__descr">
-            <p>Для передачи необходимо подготовить строки в формате указанном ниже. Не допустимы: знаки
-                препинания после фигурных скобок, пробелы и отступы перед фигурными скобками.
-                Лишняя пустая строка после последнего элемента.
-            </p>
-            <p>Образец строки для передачи:</p>
-            <p>
-                {"item":[55.785420000000002,49.154940000000003],"description":"73633265Three phase AM550точность:1560","radiusMeters":1560,"lost":"true"} <br/>
-                {"item":[55.741810000000001,49.27102],"description":"74412838Three phase AM550точность:4950","radiusMeters":4950,"lost":"true"}<br/>
-                {"item":[55.51332,52.289000000000001],"description":"73608606Single phase AM550точность:15690","radiusMeters":15690,"lost":"true"}<br/>
-                {"item":[55.878230000000002,49.05921],"description":"73622358Single phase AM550точность:3180","radiusMeters":3180,"lost":"true"}<br/>
-                {"item":[55.51332,52.289000000000001],"description":"73608874Single phase AM550точность:15690","radiusMeters":15690,"lost":"true"}<br/>
-                
-            </p>
+    <!-- header -->
+    <header class="header">
+        <div class="container header-container">
+            <div class="header-logo-wrapper">
+                <a aria-label="Логотип" href="#" class="header__logo" tabindex="0">
+                    <picture>
+                        <img src="img/header/logo.png" alt="Logo">
+                    </picture>
+                </a>
+            </div>
         </div>
-      
-        <div class="main__fields-wrapper" id="main__fields-wrapper">
-            <div class="main__form-wrapper">
-                <div class="textArea__container">
-                    <textarea class="main__textarea" id="textarea"></textarea>
-                    <div class="button-wrapper">
-                        <button onclick="getMap2GisApi(), textAreaArray()">Отобразить карту</button>
-                        <button onclick="getAdresArr()">Получить адреса</button>
+    </header>
+    <!-- main -->
+    <main class="main">
+        <article class="article">
+            <h1 class="main__title">Поиск объектов по координатам</h1>
+            <div class="hero section-offset">
+                <div class="container hero-container">
+                    <h2 class="hero__title"> Зарегистрируйся на <a href="https://dadata.ru/"
+                            class="hero__link">dadata.ru</a> и подставь значения API key из личного кабинета</h2>
+                    <div class="hero__api-load">
+                        <label for="apiKey">Введите apiKey</label>
+                        <input type="text" name="apiKey" id="apiKey" placeholder="api-key">
+                        <button onclick="getApiKey()">ok</button>
+                    </div>
+                    <div class="hero__descr-wrapper">
+                        <div class="hero__descr-text">
+                            <p class="hero__text-descr text-descr">Сервис позволяет из координат отрисовать точку на
+                                карте и по желанию узнать адреса ближайших домов задавая радиус поиска</p>
+                            <p class="hero__text-descr text-descr">Для удобства сделано отображение одиночной точки, так
+                                и возможность загрузить список необходимых точек. Но для этого список придётся
+                                подготовить</p>
+                        </div>
+
+                        <div class="hero__descr-text">
+                            <p class="hero__text-title text-title">Что необходимо включить:</p>
+                            <ul class="hero__list-descr">
+                                <li class="hero__item-descr">
+                                    <p class="hero__text-descr text-descr"> item&nbsp;&mdash; содержит в&nbsp;себе
+                                        данные о&nbsp;широте и&nbsp;долготе.</p>
+                                </li>
+                                <li class="hero__item-descr">
+                                    <p class="hero__text-descr text-descr "> description&nbsp;&mdash; любая информация
+                                        о&nbsp;точке, требуется не&nbsp;повторяться иначе возможно некорректное
+                                        поведение программы.</p>
+                                </li>
+                                <li class="hero__item-descr">
+                                    <p class="hero__text-descr text-descr "> radiusMeters&nbsp;&mdash; радиус поиска
+                                        адресов от&nbsp;указанных координат.</p>
+                                </li>
+                                <li class="hero__item-descr">
+                                    <p class="hero__text-descr text-descr "> lost&nbsp;&mdash; если true&nbsp;&mdash;
+                                        точки на&nbsp;карте красные, если false&nbsp;&mdash; точки синие.</p>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="hero__example">
+                            <p class="hero__text-title text-title ">Как должен выглядить:</p>
+                            <p class="hero__text-descr text-descr">
+                                {"item":[55.785420000000002,49.154940000000003],"description":"73633265 Three phase
+                                AM550точность:1560","radiusMeters":1560,"lost":"true"}</br>
+                                {"item":[55.741810000000001,49.27102],"description":"74412838 Three phase AM550
+                                точность:4950","radiusMeters":4950,"lost":"false"}</br>
+                                {"item":[55.51332,52.289000000000001],"description":"73608606 Single phase AM550
+                                точность:15690","radiusMeters":15690,"lost":"true"}</br>
+                                {"item":[55.878230000000002,49.05921],"description":"73622358 Single phase AM550
+                                точность:3180","radiusMeters":3180,"lost":"false"}</br>
+                            </p>
+                        </div>
+
                     </div>
                 </div>
-                <div class="main__listInput-wrapper">
-                    <ul class="main__listInput">
-                        <li id="latitude-item">
-                            <label for="latitude">Введите широту:</label>
-                            <input type="number" placeholder="latitude/широта" name="latitude" id="latitude" required>
-                        </li>
-                        <li id="longitude-item">
-                            <label for="longitude">Введите долготу:</label>
-                            <input type="number" placeholder="longitude/долгота" name="longitude" id="longitude" required>
-                        </li>
-                        <li id="point-item">
-                            <label for="pointName">Введите данные для идентификации</label>
-                            <input type="text" placeholder="description" name="pointName" id="description">
-                        </li>
-    
-                        <li id="radius-meters">
-                            <label for="radiusMeters">Введите радиус в котором определятся адреса</label>
-                            <input type="text" placeholder="radius-meters" name="pointName" id="radiusMeters">
-                        </li>
-    
-                        <li>
-                            <label for="needSearch">Если точка известна: false, иначе true</label>
-                            <select name="needSearch" id="selectNeedSearch">
-                                <option value=false>false</option>
-                                <option value="true">true</option>
-                            </select>
-                        </li>
-                        <div class="handleForm__button-wrapper">
-                            <button onclick="inputCoordinate(), getMap2GisApi()">Отобразить карту</button>
-                            <button onclick="clearInput()">Очистить поля</button>
-                            <button onclick="getAdresInputData()">Узнать адреса рядом</button>
+            </div>
+        </article>
+
+        <!-- services -->
+        <div class="services section-offset" id="services">
+            <div class="container services-container">
+                <h2 class="services__title">Сервисы</h2>
+                <h3 class="services__text">Сервис массового поиска</h3>
+                <div class="services__forms-wrapper" id="services-forms-wrapper">
+                    <div class="services__massive-load-form-wrapper">
+                        <textarea class="services__massive-load-textarea" id="textarea"></textarea>
+                        <div class="services__massive-load-button-wrapper">
+                            <button class="services__massive-load-button button-reset"
+                                onclick="getMap2GisApi(), textAreaArray()">Отобразить карту</button>
+                            <button class="services__massive-load-button button-reset" onclick="getAdresArr()">Получить
+                                все адреса</button>
+                            <button class="services__massive-load-button button-reset" onclick="clearAdres()">Удалить
+                                адреса</button>
                         </div>
-                    </ul>
+                    </div>
+                    <div class="services__form-and-map-wrapper" >
+                        <div class="services__one-point-form-wrapper">
+                            <h3 class="services__text">Сервис поиска по точке:</h3>
+                            <ul class="one-point-form__list">
+                                <li class="one-point-form__item" id="latitude-item">
+                                    <label for="latitude">Введите широту:</label>
+                                    <input type="number" placeholder="latitude/широта" name="latitude" id="latitude"
+                                        required>
+                                </li>
+                                <li class="one-point-form__item" id="longitude-item">
+                                    <label for="longitude">Введите долготу:</label>
+                                    <input type="number" placeholder="longitude/долгота" name="longitude" id="longitude"
+                                        required>
+                                </li>
+                                <li class="one-point-form__item" id="point-item">
+                                    <label for="pointName">Введите данные для идентификации</label>
+                                    <input type="text" placeholder="description" name="pointName" id="description">
+                                </li>
+
+                                <li class="one-point-form__item" id="radius-meters">
+                                    <label for="radiusMeters">Введите радиус в котором определятся адреса</label>
+                                    <input type="text" placeholder="radius-meters" name="pointName" id="radiusMeters">
+                                </li>
+
+                                <li class="one-point-form__item">
+                                    <label for="needSearch">Если точка известна: false, иначе true</label>
+                                    <select name="needSearch" id="selectNeedSearch">
+                                        <option value=false>false</option>
+                                        <option value="true">true</option>
+                                    </select>
+                                </li>
+                            </ul>
+
+                            <div class="services__one-point-form-button-wrapper">
+                                <button class="button-reset" onclick="inputCoordinate(), getMap2GisApi()">Отобразить
+                                    карту</button>
+                                <button class="button-reset" onclick="clearInput()">Очистить поля</button>
+                                <button class="button-reset" onclick="getAdresInputData()">Узнать адреса рядом</button>
+                                <button class="button-reset" onclick="clearAdres()">Удалить адреса</button>
+                            </div>
+                        </div>
+
+                        <div class="services__map-wrapper" id="services-map-wrapper">
+                            <h3 class="services__text">Отображение карты:</h3>
+                            
+                             <div id="map" class="services__map hidden">
+                        </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="map" class=""></div>
+        </div>
+
+        <!-- adress       -->
+        <div class="adres section-offset">
+            <div class="adres__list-wrapper container" id="adres"></div>
         </div>
 
 
- 
-    </div>
-    <div id="adres" class="adres-list__wrapper container"></div>
-
+    </main>
 
 </body>
 

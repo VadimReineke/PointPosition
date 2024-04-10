@@ -8,15 +8,15 @@ let queryPoint = {};
 let secretKey = '';
 
 const getApiKey = () => {
-  let apiKey = document.getElementById('apiKey').value
-  if (apiKey === '') {
-    alert("Введите код")
-    apiKey = localStorage.getItem('apiKey');
-  } else {
-    localStorage.setItem('apiKey',apiKey)
-  }
-    
-//    console.log(localStorage.getItem('apiKey'))
+    let apiKey = document.getElementById('apiKey').value
+    if (apiKey === '') {
+        alert("Введите код")
+        apiKey = localStorage.getItem('apiKey');
+    } else {
+        localStorage.setItem('apiKey', apiKey)
+    }
+
+    //    console.log(localStorage.getItem('apiKey'))
 }
 
 const getMap2GisApi = async () => {
@@ -38,31 +38,32 @@ const getMap2GisApi = async () => {
             iconSize: [34, 42],
             // iconAnchor: [22, 94],
             // popupAnchor: [-3, -76],
-             shadowUrl: 'https://icon-icons.com/icons2/317/PNG/512/map-marker-icon_34392.png',
-             shadowRetinaUrl: 'https://icon-icons.com/icons2/317/PNG/512/map-marker-icon_34392.png',
+            shadowUrl: 'https://icon-icons.com/icons2/317/PNG/512/map-marker-icon_34392.png',
+            shadowRetinaUrl: 'https://icon-icons.com/icons2/317/PNG/512/map-marker-icon_34392.png',
             shadowSize: [68, 95],
             // shadowAnchor: [22, 94]
         });
 
         // разбираем массив и генерируем точку на карте если данные из текстареа
         if (loadArrData.length !== 0) {
+
             for (i = 0; i < loadArrData.length; i++) {
-          
+
                 let loadDataPoint = JSON.parse(loadArrData[i]);
                 // каждой точке присваиваем уникальный id
-                   let point = {
-                            ...loadDataPoint,
-                            id: (i+1)
-                    }
+                let point = {
+                    ...loadDataPoint,
+                    id: (i + 1)
+                }
                 // создаем массив из которого отрисовываем точки на карте    
-               workArr.push(point);
+                workArr.push(point);
 
                 if (point.lost === 'false') {
                     DG.marker(point.item).addTo(map).bindPopup(point.description)
                 } else {
                     DG.marker(point.item, { icon: myIcon }).addTo(map).bindPopup(point.description)
                 }
-    
+
             }
         }
 
@@ -85,13 +86,13 @@ const getMap2GisApi = async () => {
     });
 }
 
+
+
 const dadataApi = async (queryPoint) => {
 
     let adresContainer = document.getElementById('adres');
     apiKey = localStorage.getItem('apiKey');
 
-    // let queryPoint = adresArr[i]
-  
     let url = "http://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address";
     const response = await fetch(
         url,
@@ -108,21 +109,24 @@ const dadataApi = async (queryPoint) => {
 
     const reserveData = await response.json();
     let adressList = document.createElement('ul');
-        adressList.classList.add('adres-list')
+    adressList.classList.add('adres__list')
     let adressListDescr = document.createElement('p');
-        adressListDescr.innerHTML ='Описание точки:' + "" + queryPoint.description;
-        adressList.append(adressListDescr);
-        adresContainer.append(adressList);
+        adressListDescr.classList.add('text-title', 'adress__list-title')
+    adressListDescr.innerHTML = 'Описание точки:' + "" + queryPoint.description;
+    adressList.append(adressListDescr);
+    adresContainer.append(adressList);
 
     if (reserveData.suggestions.length > 0) {
-        for (j=0; j < reserveData.suggestions.length; j++) {
+        for (j = 0; j < reserveData.suggestions.length; j++) {
             let item = document.createElement('li');
+                item.classList.add('adres__item')
             let itemDescr = document.createElement('p');
-                 itemDescr.innerHTML = reserveData.suggestions[j].value;
-              item.append(itemDescr);
-              adressList.append(item);   
+                itemDescr.classList.add('text-descr');
+            itemDescr.innerHTML = reserveData.suggestions[j].value;
+            item.append(itemDescr);
+            adressList.append(item);
         }
-}
+    }
 }
 
 const loadArr = () => {
@@ -134,12 +138,12 @@ const loadArr = () => {
 }
 
 const addMap = () => {
-    let main = document.getElementById('main__fields-wrapper');
+    let services = document.getElementById('services-map-wrapper');
     let mapContainer = document.createElement('div');
-    mapContainer.classList.add('main__map');
-    mapContainer.setAttribute('id', 'map');
-    mapContainer.classList.add('main__map');
-    main.append(mapContainer);
+        mapContainer.classList.add('services__map');
+        mapContainer.setAttribute('id', 'map');
+        mapContainer.classList.add('services__map');
+    services.append(mapContainer);
 }
 const removeMap = () => {
     let map = document.getElementById('map');
@@ -158,7 +162,7 @@ const inputCoordinate = () => {
     let needSearch = document.getElementById('selectNeedSearch').value;
     let radiusMeters = document.getElementById('radiusMeters').value;
 
-    if(radiusMeters === '') {radiusMeters = 0}
+    if (radiusMeters === '') { radiusMeters = 0 }
 
     if (latitude != "") {
         inputCoordinateObj = {
@@ -167,14 +171,15 @@ const inputCoordinate = () => {
             lost: needSearch
         };
 
-       queryPoint = { 
-        'lat': latitude, 
-        'lon': longitude, 
-        "radius_meters": radiusMeters, 
-        'description': pointName}
+        queryPoint = {
+            'lat': latitude,
+            'lon': longitude,
+            "radius_meters": radiusMeters,
+            'description': pointName
+        }
 
     }
-    return {inputCoordinateObj, queryPoint}
+    return { inputCoordinateObj, queryPoint }
 
 }
 
@@ -193,38 +198,26 @@ const clearInput = () => {
         document.getElementById('latitude').value = '';
         document.getElementById('longitude').value = '';
         document.getElementById('description').value = '';
+        document.getElementById('radiusMeters').value = '';
         document.getElementById('selectNeedSearch').value = false;
     })();
 }
 
 const clearAdres = () => {
-    let oldAdres = Array.from(document.getElementsByClassName('adres-list')) // Убираем старые списки
+    let oldAdres = Array.from(document.getElementsByClassName('adres__list')) // Убираем старые списки
     if (oldAdres.length > 0) {
         for (i = 0; i < oldAdres.length; i++) {
             let element = oldAdres[i];
             element.remove();
         }
-}
+    }
 }
 
 const getAdresArr = async () => {
-    // removeMap();
+    // removeMap();  // если включить карта будет удаляться при появлении адресов
     clearAdres();
     loadArr();
     let adresArr = [];
-
-    // if (workArr.length !== 0) {
-    //     for (i = 0; i < workArr.length; i++) {
-    //         let point = JSON.parse(workArr[i]);
-    //         let pointAdres = {
-    //             lat: point.item[0],
-    //             lon: point.item[1],
-    //             idPoint: point.description,
-    //             radiusMeters: point.radiusMeters
-    //         }
-    //         adresArr.push(pointAdres);
-    //     }
-    // }
 
     if (loadArrData.length !== 0) {
         for (i = 0; i < loadArrData.length; i++) {
@@ -238,28 +231,27 @@ const getAdresArr = async () => {
             adresArr.push(pointAdres);
         }
     }
-   
-   
-    for (i=0; i < adresArr.length; i++) {
 
+    for (i = 0; i < adresArr.length; i++) {
         let queryPoint = adresArr[i]
-        console.log(queryPoint);
-
-        dadataApi(queryPoint)    
+        dadataApi(queryPoint)
     }
 }
 
 // заполнение инпутов по клику по точке
 document.addEventListener('click', (e) => {
- if (e.target.classList.contains('leaflet-marker-icon')) {
-    let dgData = document.getElementsByClassName('dg-popup__container');
-    let searchData = dgData[0].innerHTML;
-    let searchPointName = workArr.find(point => point.description === searchData)
-    document.getElementById('latitude').value = searchPointName.item[0];
-    document.getElementById('longitude').value = searchPointName.item[1];
-    document.getElementById('description').value = searchPointName.description;
-    document.getElementById('selectNeedSearch').value = searchPointName.lost;
-    document.getElementById('radiusMeters').value = searchPointName.radiusMeters;
- }
-})
+    // задержка что б оновились даннные иначе отображается в инпутах старые значения
+    setTimeout(function () {       
+     if (e.target.classList.contains('leaflet-marker-icon')) {
+        let dgData = document.getElementsByClassName('dg-popup__container');
+        let searchData = dgData[0].innerHTML;
+        let searchPointName = workArr.find(point => point.description === searchData)
+        document.getElementById('latitude').value = searchPointName.item[0];
+        document.getElementById('longitude').value = searchPointName.item[1];
+        document.getElementById('description').value = searchPointName.description;
+        document.getElementById('selectNeedSearch').value = searchPointName.lost;
+        document.getElementById('radiusMeters').value = searchPointName.radiusMeters;
+     }
+    }, 500)
 
+})
