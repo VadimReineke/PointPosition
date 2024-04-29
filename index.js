@@ -15,22 +15,22 @@ const getApiKey = () => {
     } else {
         localStorage.setItem('apiKey', apiKey)
     }
-
-    //    console.log(localStorage.getItem('apiKey'))
 }
 
-const getMap2GisApi = async () => {
+const getMap2GisApi = async (centerArr = [55.89, 49.20], mapZoom = 10) => {
     removeMap();
     clearAdres();
     loadArr();
 
     let map;
 
+
     DG.then(function () {
         map = DG.map('map', {
-            center: [55.89, 49.20],
-            zoom: 6
+            center: centerArr,
+            zoom: mapZoom
         });
+
 
         let myIcon = DG.icon({
             iconUrl: 'https://icon-icons.com/icons2/317/PNG/512/map-marker-icon_34392.png',
@@ -60,21 +60,25 @@ const getMap2GisApi = async () => {
 
                 if (point.lost === 'false') {
                     DG.marker(point.item).addTo(map).bindPopup(point.description)
+
                 } else {
-                    DG.marker(point.item, { icon: myIcon }).addTo(map).bindPopup(point.description)
+                    DG.marker(point.item, { icon: myIcon }).addTo(map).bindPopup(point.description)                    
                 }
 
             }
         }
 
-        // генерируем точку на карте если данные из формы
+        // генерируем точку на карте если данные из формы и отрисовываем окружность для поиска точки
 
         if (inputCoordinateObj !== false) {
-            workArr = []
+            workArr = [];
             if (inputCoordinateObj.lost === "false") {
                 DG.marker(inputCoordinateObj.item).addTo(map).bindPopup(inputCoordinateObj.description)
-            } else (DG.marker(inputCoordinateObj.item, { icon: myIcon }).addTo(map).bindPopup(inputCoordinateObj.description))
-
+                DG.circle(inputCoordinateObj.item, Number(inputCoordinateObj.radiusMeters)).addTo(map)                            
+            } else {
+                DG.marker(inputCoordinateObj.item, { icon: myIcon }).addTo(map).bindPopup(inputCoordinateObj.description);
+                DG.circle(inputCoordinateObj.item, Number(inputCoordinateObj.radiusMeters)).addTo(map);
+            }
             let marker = Array.from(document.getElementsByClassName('leaflet-marker-icon'))
             if (marker.length > 1) {
                 for (i = 0; i < (marker.length - 1); i++) {
@@ -83,10 +87,39 @@ const getMap2GisApi = async () => {
                 }
             }
         }
+
+        // заполнение инпутов по клику по точке и отрисовка радиуса
+        document.addEventListener('click', (e) => {
+            setTimeout(function () {       
+                if (e.target.classList.contains('leaflet-marker-icon')) {
+                   let dgData = document.getElementsByClassName('dg-popup__container');
+                   let searchData = dgData[0].innerHTML;
+                   const loadInput = (searchPointName) => {
+                       document.getElementById('latitude').value = searchPointName.item[0];
+                       document.getElementById('longitude').value = searchPointName.item[1];
+                       document.getElementById('description').value = searchPointName.description;
+                       document.getElementById('selectNeedSearch').value = searchPointName.lost;
+                       document.getElementById('radiusMeters').value = searchPointName.radiusMeters;
+                       }                  
+                   if (workArr.length > 0) {
+                       let searchPointName = workArr.find(point => point.description === searchData);
+                     loadInput(searchPointName)
+                     DG.circle(searchPointName.item, searchPointName.radiusMeters).addTo(map);
+                   
+                   } else {
+                       searchPointName = inputCoordinateObj;
+                       loadInput(searchPointName);
+                       DG.circle(searchPointName.item, searchPointName.radiusMeters).addTo(map);
+                       
+                   }
+                         
+                }
+                
+               }, 500)
+        })
     });
+
 }
-
-
 
 const dadataApi = async (queryPoint) => {
 
@@ -106,8 +139,11 @@ const dadataApi = async (queryPoint) => {
             body: JSON.stringify(queryPoint)
         }
     );
-
+      
+ 
     const reserveData = await response.json();
+    console.log(reserveData)
+    
     let adressList = document.createElement('ul');
     adressList.classList.add('adres__list')
     let adressListDescr = document.createElement('p');
@@ -168,7 +204,8 @@ const inputCoordinate = () => {
         inputCoordinateObj = {
             item: [latitude, longitude],
             description: pointName,
-            lost: needSearch
+            lost: needSearch,
+            radiusMeters: radiusMeters
         };
 
         queryPoint = {
@@ -238,20 +275,3 @@ const getAdresArr = async () => {
     }
 }
 
-// заполнение инпутов по клику по точке
-document.addEventListener('click', (e) => {
-    // задержка что б оновились даннные иначе отображается в инпутах старые значения
-    setTimeout(function () {       
-     if (e.target.classList.contains('leaflet-marker-icon')) {
-        let dgData = document.getElementsByClassName('dg-popup__container');
-        let searchData = dgData[0].innerHTML;
-        let searchPointName = workArr.find(point => point.description === searchData)
-        document.getElementById('latitude').value = searchPointName.item[0];
-        document.getElementById('longitude').value = searchPointName.item[1];
-        document.getElementById('description').value = searchPointName.description;
-        document.getElementById('selectNeedSearch').value = searchPointName.lost;
-        document.getElementById('radiusMeters').value = searchPointName.radiusMeters;
-     }
-    }, 500)
-
-})
